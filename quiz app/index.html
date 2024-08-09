@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .cont {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 80%;
+            max-width: 500px;
+        }
+        .quiz {
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            background: #4CAF50;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+        h3 {
+            margin: 20px 0;
+        }
+        .answer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .answer button {
+            background: #f1f1f1;
+            border: none;
+            border-radius: 5px;
+            margin: 5px 0;
+            padding: 10px 20px;
+            width: 100%;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .answer button:hover {
+            background: #ddd;
+        }
+        .classnxt {
+            background: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .classnxt:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="cont">
+        <h1>Quiz App</h1>
+        <div class="quiz">
+            <h3 class="ques">Question</h3>
+            <div class="answer"></div>
+            <button class="classnxt">Next</button>
+        </div>
+    </div>
+    <script>
+        const questions = [
+            {
+                question: "Which is the largest animal in the world?",
+                answers: [
+                    { text: "Shark", correct: false },
+                    { text: "Blue whale", correct: true },
+                    { text: "Elephant", correct: false },
+                    { text: "Giraffe", correct: false }
+                ]
+            },
+            {
+                question: "Which is the smallest continent in the world?",
+                answers: [
+                    { text: "Asia", correct: false },
+                    { text: "Australia", correct: true },
+                    { text: "Arctic", correct: false },
+                    { text: "Africa", correct: false }
+                ]
+            },
+            {
+                question: "Which is the smallest desert in the world?",
+                answers: [
+                    { text: "Kalahari", correct: false },
+                    { text: "Gobi", correct: false },
+                    { text: "Sahara", correct: false },
+                    { text: "Antarctica", correct: true }
+                ]
+            },
+            {
+                question: "Which is the smallest country in the world?",
+                answers: [
+                    { text: "Vatican City", correct: true },
+                    { text: "Bhutan", correct: false },
+                    { text: "Nepal", correct: false },
+                    { text: "Sri Lanka", correct: false }
+                ]
+            }
+        ];
+
+        const quest = document.querySelector(".ques");
+        const ansContainer = document.querySelector(".answer");
+        const nxtbtn = document.querySelector(".classnxt");
+
+        let questionIndex = 0;
+        let score = 0;
+
+        function startQuiz() {
+            questionIndex = 0;
+            score = 0;
+            nxtbtn.innerHTML = "Next";
+            showQuestion();
+        }
+
+        function showQuestion() {
+            clearAnswers();
+            const currentQues = questions[questionIndex];
+            quest.innerHTML = `${questionIndex + 1}. ${currentQues.question}`;
+            
+            currentQues.answers.forEach(answer => {
+                const button = document.createElement("button");
+                button.innerHTML = answer.text;
+                button.classList.add("ans");
+                button.addEventListener("click", () => selectAnswer(button, answer.correct));
+                ansContainer.appendChild(button);
+            });
+        }
+
+        function clearAnswers() {
+            ansContainer.innerHTML = "";
+        }
+
+        function selectAnswer(button, correct) {
+            if (correct) {
+                score++;
+            }
+            Array.from(ansContainer.children).forEach(btn => {
+                btn.disabled = true;
+                const answer = questions[questionIndex].answers.find(ans => ans.text === btn.innerHTML);
+                if (answer.correct) {
+                    btn.style.backgroundColor = "green";
+                    btn.style.color = "white";
+                } else {
+                    btn.style.backgroundColor = "red";
+                    btn.style.color = "white";
+                }
+            });
+        }
+
+        nxtbtn.addEventListener("click", () => {
+            questionIndex++;
+            if (questionIndex < questions.length) {
+                showQuestion();
+            } else {
+                showResults();
+            }
+        });
+
+        function showResults() {
+            quest.innerHTML = `Quiz completed! Your score is ${score} out of ${questions.length}.`;
+            clearAnswers();
+            nxtbtn.innerHTML = "Restart";
+            nxtbtn.addEventListener("click", startQuiz, { once: true });
+        }
+
+        startQuiz();
+    </script>
+</body>
+</html>
